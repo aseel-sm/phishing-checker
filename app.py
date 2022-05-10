@@ -1,8 +1,3 @@
-
-
-
-
-
 # Flask utils
 from flask import Flask, redirect, url_for, request, render_template
 from werkzeug.utils import secure_filename
@@ -30,23 +25,29 @@ def predict():
         loaded_model = pickle.load(open('phishing.pkl', 'rb'))
         op = loaded_model.predict(data)
         print(op[0])
+        print()
         result={}
         result['op']=op[0]
         if(op[0]=="bad"):
             links_with_text = []
-            # req = requests.get(url)       
-            # soup = BeautifulSoup(req.text,"html.parser")
-            # for line in soup.find_all('a'):
-            #     href = line.get('href')
-            #     print(href)
-            #     links_with_text.append(href)
+            req = requests.get(url)       
+            soup = BeautifulSoup(req.text,"html.parser")
+            for line in soup.find_all('a'):
+                href = line.get('href')
+                links_with_text.append(href)
            
             result['links']=links_with_text
-            
+#             headers = {'x-api-key': '53401fd5-1dd3-479c-9826-e949598451ab'}
+#             response = requests.post('https://api.geekflare.com/dnsrecord', data = {
+#   "url": url
+# },headers=headers)
+#             print(response)
+#             result['ip']=response.json()
         return result
     return None
 
 
 
 if __name__ == '__main__':
+   app.debug=True 
    app.run()
